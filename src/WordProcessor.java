@@ -92,7 +92,35 @@ public class WordProcessor {
 	 * @return true if word1 and word2 are adjacent else false
 	 */
 	public static boolean isAdjacent(String word1, String word2) {
-		return false;	
+        if (word1.equals(word2))
+            return false; // same string case
+        if (word1.length() == word2.length()) { // 1 char replacement case
+            int sum = 0;
+            for (int i = 0; i < word1.length(); i++) {
+                if ((word1.charAt(i) ^ word2.charAt(i)) != 0)
+                    sum++;
+            }
+            if (sum == 1)
+                return true;
+        }
+        if (Math.abs(word1.length() - word2.length()) == 1) { // 1 char add and delete case
+            if (word1.length() < word2.length()) { // make all cases become 1 delete cases
+                String temp = word1;
+                word1 = word2;
+                word2 = temp;
+            }
+            char[] word = word1.toCharArray();
+            for (int i = 0; i < word1.length(); i++) { // remove a char at each position to make new
+                                                       // substring to find whether it matches word2
+                String subWord = new String();
+                for (int j = 0; j < word1.length(); j++) {
+                    if (i != j)
+                        subWord = subWord + word[j];
+                }
+                if (subWord.equals(word2))
+                    return true;
+            }
+        }
+        return false;
 	}
-	
 }
