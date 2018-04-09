@@ -55,6 +55,20 @@ public class AdjacencyList<T> {
 	}
 	
 	/**
+	 * returns the edges of a specified vertex
+	 * @param vertex - given vertex
+	 * @return list of edges from vertex
+	 */
+	public LinkedList<T> getEdges(T vertex){
+		int index = vertices.indexOf(vertex);
+		// vertex does not exist within list
+		if( index == -1 ) {
+			throw new IllegalArgumentException("vertex not found");
+		}
+		return list.get(index);
+	}
+	
+	/**
 	 * Removes edge between source and destination
 	 * Written for directional graphs, if non-directional, method should be called twice
 	 * @param source
