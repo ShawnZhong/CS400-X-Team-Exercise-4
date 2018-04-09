@@ -5,10 +5,12 @@
  * @author sapan (sapan@cs.wisc.edu)
  */
 public class Graph<E> implements GraphADT<E> {
-
     /**
      * Instance variables and constructors
      */
+
+	ArrayList<E> vertices;
+	AdjacencyList<E> edges;
 
     /**
      * Add new vertex to the graph
