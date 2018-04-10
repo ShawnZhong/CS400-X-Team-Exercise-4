@@ -1,9 +1,11 @@
+import java.util.ArrayList;
+
 /*
  * LinkedList implementation used for Graph
  * limited functions of a Linked list
  * does not allow duplicates
  */
-public class LinkedList<T> {
+public class LinkedList<T>{
 	/**
 	 * Inner generic Class for nodes of the linked list
 	 */
@@ -28,7 +30,7 @@ public class LinkedList<T> {
 	/**
 	 * Instance variables and constructors
 	 */
-	LinkedNode<T> root;
+	private LinkedNode<T> root;
 
 	LinkedList() {
 		root = null;
@@ -39,6 +41,30 @@ public class LinkedList<T> {
 	 */
 	public boolean isEmpty() {
 		return root == null;
+	}
+	
+	/**
+	 * Search for item within the list
+	 * @param key - data that the list is searching for
+	 * @return - returns the data if found
+	 */
+	public T search( T key) {
+		if( root == null ) {
+			return null;
+		}
+		if(root.data.equals(key)) {
+			return root.data;
+		}
+		else {
+			LinkedNode<T> list = root;
+			while(list.next != null) {
+				if(list.next.data.equals(key)){
+					return list.data;
+				}
+				list = list.next;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -53,7 +79,7 @@ public class LinkedList<T> {
 		if (root == null) {
 			root = new LinkedNode<T>(item);
 		}
-		else if(root.data == item) {
+		else if(root.data.equals(item)) {
 			throw new DuplicateException();
 		}
 		else {
@@ -104,4 +130,19 @@ public class LinkedList<T> {
 		// delete cur node
 		prev.next = cur.next;
 	}
+	
+	/**
+	 * Converts linked list into an array list
+	 * @return - array list with linked list data
+	 */
+	public ArrayList<T> toArrayList(){
+		LinkedNode<T> list = root;
+		ArrayList<T> toReturn = new ArrayList<T>();
+		while(list != null) {
+			toReturn.add(list.data);
+			list = list.next;
+		}
+		return toReturn;
+	}
+
 }
