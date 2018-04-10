@@ -40,7 +40,6 @@ public class Graph<E> implements GraphADT<E> {
 			// no duplicates
 			return null;
 		}
-		System.out.println(vertex);
 		vertices.add(vertex); // adds vertex to the end of list of vertices
 		edges.addVertex(vertex); // adds index in edges list to vertex
 		return vertex;
