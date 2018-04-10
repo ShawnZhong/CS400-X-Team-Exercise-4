@@ -12,8 +12,8 @@ public class Graph<E> implements GraphADT<E> {
     /**
      * Instance variables and constructors
      */
-    ArrayList<E> vertices;
-    AdjacencyList<E> edges; // contains both vertices and edges
+    private ArrayList<E> vertices;
+    private AdjacencyList<E> edges; // contains both vertices and edges
 
     Graph() {
         vertices = new ArrayList<E>();
@@ -33,17 +33,12 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E addVertex(E vertex) {
-        // non-null
-        if (vertex == null) {
+        if (vertex == null || vertices.contains(vertex))  // not null or duplicates
             return null;
-        } else if (vertices.contains(vertex)) {
-            // no duplicates
-            return null;
-        }
+
         vertices.add(vertex); // adds vertex to the end of list of vertices
         edges.addVertex(vertex); // adds index in edges list to vertex
         return vertex;
-
     }
 
     /**
@@ -150,9 +145,9 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
         // vertex1 or vertex2 is null
-        if (vertex1 == null || vertex2 == null) {
+        if (vertex1 == null || vertex2 == null)
             return false;
-        }
+
         int index1 = vertices.indexOf(vertex1);
         int index2 = vertices.indexOf(vertex2);
         if (index1 < 0 || index2 < 0 || index1 == index2) {
@@ -161,7 +156,6 @@ public class Graph<E> implements GraphADT<E> {
         }
         // since graph is undirected, only needs to be called once
         return edges.isConntected(vertex1, vertex2, index1);
-
     }
 
     /**
@@ -174,11 +168,7 @@ public class Graph<E> implements GraphADT<E> {
     // uses an array list
     public Iterable<E> getNeighbors(E vertex) {
         int index = vertices.indexOf(vertex);
-        // vertex is not within graph
-        if (index < 0) {
-            return null;
-        }
-        return edges.getEdges(index);
+        return index < 0 ? null : edges.getEdges(index);
     }
 
     /**
