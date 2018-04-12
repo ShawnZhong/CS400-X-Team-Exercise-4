@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Undirected and unweighted graph implementation
@@ -12,12 +14,10 @@ public class Graph<E> implements GraphADT<E> {
     /**
      * Instance variables and constructors
      */
-    private ArrayList<E> vertices;
-    private AdjacencyList<E> edges; // contains both vertices and edges
+    private HashMap<E, HashMap<E, Integer>> edges;
 
     Graph() {
-        vertices = new ArrayList<E>();
-        edges = new AdjacencyList<E>();
+        edges = new HashMap<E, HashMap<E, Integer>>();
     }
 
     /**
@@ -33,11 +33,10 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E addVertex(E vertex) {
-        if (vertex == null || vertices.contains(vertex))  // not null or duplicates
+        if (vertex == null || edges.containsKey(vertex))  // not null or duplicates
             return null;
 
-        vertices.add(vertex); // adds vertex to the end of list of vertices
-        edges.addVertex(vertex); // adds index in edges list to vertex
+        edges.put(vertex, new HashMap<E, Integer>()); // adds index in edges list to vertex
         return vertex;
     }
 
@@ -58,13 +57,20 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex == null) {
             return null;
         }
-        int index = vertices.indexOf(vertex);
-        if (index < 0) {
+        if (edges.get(vertex) == null) {
             // vertex is not within graph
             return null;
         }
-        vertices.remove(index); // removes vertex from vertex list
-        edges.removeVetex(vertex, index); // remove vertex from edge list
+        // removes vertex
+        edges.remove(vertex);
+        // removes every edge to vertex
+        Set<E> set = edges.keySet();
+        for(E key: set) {
+        	HashMap<E, Integer> search = edges.get(key);
+        	if(search.containsKey(vertex)) {
+        		search.remove(vertex);
+        	}
+        }
         return vertex;
     }
 
@@ -86,15 +92,13 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex1 == null || vertex2 == null) {
             return false;
         }
-        int index1 = vertices.indexOf(vertex1);
-        int index2 = vertices.indexOf(vertex2);
-        if (index1 < 0 || index2 < 0 || index1 == index2) {
+        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
             //vertex1 or vertex2 is not within graph or vertex1 == vertex2
             return false;
         }
         // added twice, edges is written for directed graph
-        edges.addEdge(vertex1, vertex2, index1);
-        edges.addEdge(vertex2, vertex1, index2);
+        edges.get(vertex1).put(vertex2, 0);
+        edges.get(vertex2).put(vertex1, 0);
         return true;
     }
 
@@ -116,16 +120,14 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex1 == null || vertex2 == null) {
             return false;
         }
-        int index1 = vertices.indexOf(vertex1);
-        int index2 = vertices.indexOf(vertex2);
-        if (index1 < 0 || index2 < 0 || index1 == index2) {
+        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
             //vertex1 or vertex2 is not within graph or vertex1 == vertex2
             return false;
         }
         // removes edges between two vertices twice
         // edge.removeEdge() is written for directed graphs
-        edges.removeEdge(vertex1, vertex2, index1);
-        edges.removeEdge(vertex2, vertex1, index2);
+        edges.get(vertex1).remove(vertex2);
+        edges.get(vertex2).remove(vertex1);
         return true;
     }
 
@@ -148,14 +150,12 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex1 == null || vertex2 == null)
             return false;
 
-        int index1 = vertices.indexOf(vertex1);
-        int index2 = vertices.indexOf(vertex2);
-        if (index1 < 0 || index2 < 0 || index1 == index2) {
+        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
             // vertex1 or vertex2 is not within graph or vertex1 == vertex2
             return false;
         }
         // since graph is undirected, only needs to be called once
-        return edges.isConntected(vertex1, vertex2, index1);
+        return edges.get(vertex1).containsKey(vertex2);
     }
 
     /**
@@ -165,10 +165,8 @@ public class Graph<E> implements GraphADT<E> {
      * @return an iterable for all the immediate connected neighbor vertices
      */
     @Override
-    // uses an array list
     public Iterable<E> getNeighbors(E vertex) {
-        int index = vertices.indexOf(vertex);
-        return index < 0 ? null : edges.getEdges(index);
+        return edges.get(vertex).keySet();
     }
 
     /**
@@ -178,6 +176,6 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getAllVertices() {
-        return vertices;
+        return edges.keySet();
     }
 }
