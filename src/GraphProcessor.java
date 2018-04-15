@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * This class adds additional functionality to the graph as a whole.
@@ -31,16 +29,19 @@ import java.util.stream.Stream;
  */
 public class GraphProcessor {
 
-    /**
-     * Graph which stores the dictionary words and their associated connections
-     */
-    private GraphADT<String> graph;
+    private GraphADT<String> graph;// Graph which stores the dictionary words and their associated connections
+    private List<String> wordList; // Store each word, similar to graph.getAllVertices() but with indices
+    private int size; // number of words
+    private int[][] distance; //Pre-computed data, distance[i][j] stores the distance between i and j
+    private int[][] predecessor; // Stores the predecessor of each vertex with shortest path
+
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
     public GraphProcessor() {
         this.graph = new Graph<>();
+        this.wordList = new ArrayList<>();
     }
 
     /**
@@ -58,22 +59,64 @@ public class GraphProcessor {
      * @return Integer the number of vertices (words) added
      */
     public Integer populateGraph(String filepath) {
-        Stream<String> wordStream;
-        try {
-            wordStream = WordProcessor.getWordStream(filepath);
-        } catch (IOException e) {
+        try { // read all data from filepath and add vertices to the graph
+            WordProcessor.getWordStream(filepath).forEach(graph::addVertex);
+        } catch (Exception e) { // Error handling
             System.out.println("Can not load word from file" + filepath);
             return 0;
         }
 
-        wordStream.forEach(e1 -> {
-            graph.addVertex(e1);
-            wordStream.filter(e2 -> WordProcessor.isAdjacent(e1, e2)).forEach(e2 -> graph.addEdge(e1, e2));
-        });
+        wordList.clear();
+        graph.getAllVertices().forEach(wordList::add);
+        size = wordList.size();
 
-        return (int) wordStream.count();
+        for (String e1 : wordList)
+            for (String e2 : wordList)
+                if (WordProcessor.isAdjacent(e1, e2))
+                    graph.addEdge(e1, e2);
+
+        shortestPathPrecomputation();
+
+        return size;
     }
 
+    /**
+     * Computes shortest paths and distances between all possible pairs of vertices.
+     * This method is called after every set of updates in the graph to recompute the path information.
+     * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
+     */
+    public void shortestPathPrecomputation() {
+        predecessor = new int[size][size];
+        distance = new int[size][size];
+        for (int i = 0; i < size; i++) { // Initialize to -1
+            Arrays.fill(predecessor[i], -1);
+            Arrays.fill(distance[i], -1);
+        }
+
+
+        for (int src = 0; src < size; src++) { //BFS
+            Queue<Integer> queue = new LinkedList<>();
+            boolean visited[] = new boolean[size];
+            Arrays.fill(visited, false);
+            visited[src] = true;
+            queue.add(src);
+            distance[src][src] = 0; // initialize distance
+            while (!queue.isEmpty()) {
+                int cur = queue.remove();
+                for (String e : graph.getNeighbors(wordList.get(cur))) {
+                    int des = index(e);
+                    if (!visited[des]) {
+                        visited[des] = true;
+                        queue.add(des);
+                        distance[src][des] = distance[src][cur] + 1;
+                        predecessor[src][des] = cur;
+                    }
+                }
+            }
+        }
+
+
+    }
 
     /**
      * Gets the list of words that create the shortest path between word1 and word2
@@ -90,11 +133,24 @@ public class GraphProcessor {
      *
      * @param word1 first word
      * @param word2 second word
-     * @return List<String> list of the words
+     * @return List<String> list of the words, or empty list if such path does not exist
      */
     public List<String> getShortestPath(String word1, String word2) {
-        return null;
+        List<String> result = new ArrayList<>();
+        int shortestDistance = getShortestDistance(word1, word2);
 
+        if (shortestDistance < 0)
+            return new ArrayList<>();
+
+        result.add(word1);
+        if (shortestDistance == 0)
+            return new ArrayList<>();
+
+        int src = index(word2); // reverse src and des so that we can get the list in right order
+        for (int i = predecessor[src][index(word1)]; i != -1; i = predecessor[src][i])
+            result.add(wordList.get(i));
+
+        return result;
     }
 
     /**
@@ -112,18 +168,17 @@ public class GraphProcessor {
      *
      * @param word1 first word
      * @param word2 second word
-     * @return Integer distance
+     * @return Integer distance, or -1 if one of the word doesn't exist, or 0 if two words are the same
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return null;
+        if (word1.equals(word2))
+            return 0;
+
+        if (index(word1) < 0 || index(word2) < 0)
+            return -1;
+
+        return distance[index(word1)][index(word2)];
     }
 
-    /**
-     * Computes shortest paths and distances between all possible pairs of vertices.
-     * This method is called after every set of updates in the graph to recompute the path information.
-     * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
-     */
-    public void shortestPathPrecomputation() {
-
-    }
+    private int index(String word) { return wordList.indexOf(word.trim().toUpperCase()); }
 }
