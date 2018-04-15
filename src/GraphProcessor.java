@@ -40,8 +40,8 @@ public class GraphProcessor {
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
     public GraphProcessor() {
-        this.graph = new Graph<>();
-        this.wordList = new ArrayList<>();
+        graph = new Graph<>();
+
     }
 
     /**
@@ -66,18 +66,15 @@ public class GraphProcessor {
             return 0;
         }
 
-        wordList.clear();
+        wordList = new ArrayList<>();
         graph.getAllVertices().forEach(wordList::add);
-        size = wordList.size();
 
         for (String e1 : wordList)
             for (String e2 : wordList)
                 if (WordProcessor.isAdjacent(e1, e2))
                     graph.addEdge(e1, e2);
 
-        shortestPathPrecomputation();
-
-        return size;
+        return size = wordList.size();
     }
 
     /**

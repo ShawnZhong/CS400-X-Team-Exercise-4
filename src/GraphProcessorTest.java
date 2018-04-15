@@ -28,6 +28,7 @@ public class GraphProcessorTest {
     public void setUp() throws Exception {
         gp = new GraphProcessor();
         gp.populateGraph("word_list.txt");
+        gp.shortestPathPrecomputation();
     }
 
     @After
@@ -66,7 +67,7 @@ public class GraphProcessorTest {
         assertEquals("Shortest distance from CHARGE to GIMLETS is", 78, sd2);
         int sd3 = gp.getShortestDistance("BELLIES", "JOLLIES");
         assertEquals("Shortest distance from BELLIES to JOLLIES is", 2, sd3);
-        int sd4 = gp.getShortestDistance("DEFINE", "SHINY");
+        int sd4 = gp.getShortestDistance("DEFINE", "SHINNY");
         assertEquals("Shortest distance from DEFINE to SHINY is", 26, sd4);
     }
 
