@@ -139,11 +139,10 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
         List<String> result = new ArrayList<>();
-        int shortestDistance = getShortestDistance(word1, word2);
 
-        if (shortestDistance <= 0)
-            return new ArrayList<>();
-        
+        if (getShortestDistance(word1, word2) <= 0)
+            return result;
+
         int src = index(word2); // reverse src and des so that we can get the list in right order
         for (int i = index(word1); i != -1; i = predecessor[src][i])
             result.add(wordList.get(i));
