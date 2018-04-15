@@ -121,4 +121,94 @@ public class GraphProcessorTest {
         List<String> actual = gp.getShortestPath("RAPINE", "ALIKE");
         assertEquals("Shortest distance from RAPINE to ALIKE is", new ArrayList<>(), actual);
     }
+    
+    /**
+     * Calls getShortestPath on gp that has yet to run the
+     * populate method
+     */
+    @Test
+    public void test09_calling_shortest_path_on_empty_graph() {
+    	try {
+    		gp = new GraphProcessor();
+    		gp.getShortestPath("", "");
+    		fail("Exception not thrown, populate has yet to been called");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    		
+    }
+    
+    /**
+     * Calls getShortestPath on gp that has yet to run the
+     * populate method
+     */
+    @Test
+    public void test10_calling_get_shortest_distance_on_empty_graph() {
+    	try {
+    		gp = new GraphProcessor();
+    		gp.getShortestDistance("", "");
+    		fail("Exception not thrown, populate has yet to been called");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    		
+    }
+    
+    /**
+     * Calls shortest path pre-computation twice before graph data
+     *  has been updated
+     */
+    @Test(expected = RuntimeException.class)
+    public void test11_call_shortestPathPrecompuation_twice_before_updating() {
+    	try {
+    		gp.shortestPathPrecomputation();
+    		gp.shortestPathPrecomputation();
+    		fail("Exception not thrown, graph has yet to be updated");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    		
+    }
+    
+    /**
+     * Calls shorestPathPrecomputation on an empty graph
+     */
+    @Test
+    public void test12_calling_shortestPathPrecomputation_on_empty_graph() {
+    	try {
+    		gp = new GraphProcessor();
+    		gp.shortestPathPrecomputation();
+    		fail("Exception not thrown, populate has yet to been called");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    		
+    }
+    
+    /**
+     * Calls getShortestPath  before pre-computation has been called
+     */
+    @Test
+    public void test13_calling_shortest_path_before_precomputation() {
+    	try {
+    		gp.getShortestPath("", "");
+    		fail("Exception not thrown, precomputation has yet to been called");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    		
+    }
+    
+    /**
+     * called getting shortest distance before pre-computation has been called
+     */
+    @Test
+    public void test14_calling_get_shortest_distance_before_precomputation() {
+    	try {
+    		gp.getShortestDistance("", "");
+    		fail("Exception not thrown, precomputatoin has yet to been called");
+    	} catch(RuntimeException e) {
+    		
+    	}
+    }
 }
