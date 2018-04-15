@@ -53,7 +53,7 @@ public class GraphProcessorTest {
     @Test
     public void test02_read_file_does_not_exist() throws IOException {
         int size = gp.populateGraph("");
-        assertEquals("Number of vertices in the graph:", 0, size);
+        assertEquals("Number of vertices in the graph:", -1, size);
     }
 
     /**

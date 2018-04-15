@@ -54,27 +54,29 @@ public class GraphProcessor {
      * <p>
      * For all possible pairs of vertices, finds if the pair of vertices is adjacent {@link WordProcessor#isAdjacent(String, String)}
      * If a pair is adjacent, adds an undirected and unweighted edge between the pair of vertices in the graph.
+     * <p>
+     * Log any issues encountered (print the issue details)
      *
      * @param filepath file path to the dictionary
-     * @return Integer the number of vertices (words) added
+     * @return Integer the number of vertices (words) added; return -1 if file not found or if encountering other exceptions
      */
     public Integer populateGraph(String filepath) {
         try { // read all data from filepath and add vertices to the graph
             WordProcessor.getWordStream(filepath).forEach(graph::addVertex);
+
+            wordList = new ArrayList<>();
+            graph.getAllVertices().forEach(wordList::add);
+
+            for (String e1 : wordList)
+                for (String e2 : wordList)
+                    if (WordProcessor.isAdjacent(e1, e2))
+                        graph.addEdge(e1, e2);
+
+            return size = wordList.size();
         } catch (Exception e) { // Error handling
             System.out.println("Can not load word from file" + filepath);
-            return 0;
+            return -1;
         }
-
-        wordList = new ArrayList<>();
-        graph.getAllVertices().forEach(wordList::add);
-
-        for (String e1 : wordList)
-            for (String e2 : wordList)
-                if (WordProcessor.isAdjacent(e1, e2))
-                    graph.addEdge(e1, e2);
-
-        return size = wordList.size();
     }
 
     /**
@@ -127,24 +129,23 @@ public class GraphProcessor {
      * kit
      * shortest path between cat and wheat is the following list of words:
      * [cat, hat, heat, wheat]
+     * <p>
+     * If word1 = word2, List will be empty.
+     * Both the arguments will always be present in the graph.
      *
      * @param word1 first word
      * @param word2 second word
-     * @return List<String> list of the words, or empty list if such path does not exist
+     * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
         List<String> result = new ArrayList<>();
         int shortestDistance = getShortestDistance(word1, word2);
 
-        if (shortestDistance < 0)
+        if (shortestDistance <= 0)
             return new ArrayList<>();
-
-        result.add(word1);
-        if (shortestDistance == 0)
-            return new ArrayList<>();
-
+        
         int src = index(word2); // reverse src and des so that we can get the list in right order
-        for (int i = predecessor[src][index(word1)]; i != -1; i = predecessor[src][i])
+        for (int i = index(word1); i != -1; i = predecessor[src][i])
             result.add(wordList.get(i));
 
         return result;
@@ -162,16 +163,16 @@ public class GraphProcessor {
      * kit
      * distance of the shortest path between cat and wheat, [cat, hat, heat, wheat]
      * = 3 (the number of edges in the shortest path)
+     * <p>
+     * Distance = -1 if no path found between words (true also for word1=word2)
+     * Both the arguments will always be present in the graph.
      *
      * @param word1 first word
      * @param word2 second word
-     * @return Integer distance, or -1 if one of the word doesn't exist, or 0 if two words are the same
+     * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        if (word1.equals(word2))
-            return 0;
-
-        if (index(word1) < 0 || index(word2) < 0)
+        if (word1 == null || word2 == null || word1.equals(word2) || index(word1) < 0 || index(word2) < 0)
             return -1;
 
         return distance[index(word1)][index(word2)];
