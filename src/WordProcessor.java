@@ -47,10 +47,9 @@ public class WordProcessor {
             return false; // same string case
         if (word1.length() == word2.length()) { // 1 char replacement case
             int sum = 0;
-            for (int i = 0; i < word1.length(); i++) {
+            for (int i = 0; i < word1.length(); i++)
                 if ((word1.charAt(i) ^ word2.charAt(i)) != 0)
                     sum++;
-            }
             if (sum == 1)
                 return true;
         }
@@ -63,12 +62,11 @@ public class WordProcessor {
             char[] word = word1.toCharArray();
             for (int i = 0; i < word1.length(); i++) { // remove a char at each position to make new
                 // substring to find whether it matches word2
-                String subWord = new String();
-                for (int j = 0; j < word1.length(); j++) {
+                StringBuilder sb = new StringBuilder(); // use StringBuilder for better performance
+                for (int j = 0; j < word1.length(); j++)
                     if (i != j)
-                        subWord = subWord + word[j];
-                }
-                if (subWord.equals(word2))
+                        sb = sb.append(word[j]);
+                if (sb.toString().equals(word2))
                     return true;
             }
         }
