@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class adds additional functionality to the graph as a whole.
@@ -56,8 +58,20 @@ public class GraphProcessor {
      * @return Integer the number of vertices (words) added
      */
     public Integer populateGraph(String filepath) {
-        return 0;
+        Stream<String> wordStream;
+        try {
+            wordStream = WordProcessor.getWordStream(filepath);
+        } catch (IOException e) {
+            System.out.println("Can not load word from file" + filepath);
+            return 0;
+        }
 
+        wordStream.forEach(e1 -> {
+            graph.addVertex(e1);
+            wordStream.filter(e2 -> WordProcessor.isAdjacent(e1, e2)).forEach(e2 -> graph.addEdge(e1, e2));
+        });
+
+        return (int) wordStream.count();
     }
 
 
