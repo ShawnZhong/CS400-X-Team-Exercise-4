@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -17,7 +16,7 @@ public class Graph<E> implements GraphADT<E> {
     private HashMap<E, HashMap<E, Integer>> edges;
 
     Graph() {
-        edges = new HashMap<E, HashMap<E, Integer>>();
+        edges = new HashMap<>();
     }
 
     /**
@@ -36,7 +35,7 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex == null || edges.containsKey(vertex))  // not null or duplicates
             return null;
 
-        edges.put(vertex, new HashMap<E, Integer>()); // adds index in edges list to vertex
+        edges.put(vertex, new HashMap<>()); // adds index in edges list to vertex
         return vertex;
     }
 
@@ -65,11 +64,9 @@ public class Graph<E> implements GraphADT<E> {
         edges.remove(vertex);
         // removes every edge to vertex
         Set<E> set = edges.keySet();
-        for(E key: set) {
-        	HashMap<E, Integer> search = edges.get(key);
-        	if(search.containsKey(vertex)) {
-        		search.remove(vertex);
-        	}
+        for (E key : set) {
+            HashMap<E, Integer> search = edges.get(key);
+            search.remove(vertex);
         }
         return vertex;
     }

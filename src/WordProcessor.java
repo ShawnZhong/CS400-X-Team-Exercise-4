@@ -21,7 +21,8 @@ public class WordProcessor {
      * @see <a href="http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html">java8 stream blog</a>
      */
     public static Stream<String> getWordStream(String filepath) throws IOException {
-        return Files.lines(Paths.get(filepath)).filter(e -> !e.equals("")).map(e -> e.trim().toUpperCase());
+        // get file stream => remove space => remove empty line => change to upper case
+        return Files.lines(Paths.get(filepath)).map(String::trim).filter(e -> !e.equals("")).map(String::toUpperCase);
     }
 
     /**
