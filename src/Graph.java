@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Undirected and unweighted graph implementation
@@ -53,21 +52,15 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public E removeVertex(E vertex) {
         // non-null
-        if (vertex == null) {
+        if (vertex == null || edges.get(vertex) == null)  // vertex is null or not within graph
             return null;
-        }
-        if (edges.get(vertex) == null) {
-            // vertex is not within graph
-            return null;
-        }
-        // removes vertex
-        edges.remove(vertex);
+
         // removes every edge to vertex
-        Set<E> set = edges.keySet();
-        for (E key : set) {
-            HashMap<E, Integer> search = edges.get(key);
-            search.remove(vertex);
-        }
+        for (E key : edges.keySet())
+            edges.get(key).remove(vertex);
+
+        edges.remove(vertex);// removes vertex
+
         return vertex;
     }
 
@@ -85,14 +78,9 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
-        // vertex1 or vertex2 is null
-        if (vertex1 == null || vertex2 == null) {
+        if (notValid(vertex1, vertex2))
             return false;
-        }
-        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
-            //vertex1 or vertex2 is not within graph or vertex1 == vertex2
-            return false;
-        }
+
         // added twice, edges is written for directed graph
         edges.get(vertex1).put(vertex2, 0);
         edges.get(vertex2).put(vertex1, 0);
@@ -113,14 +101,9 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
-        // vertex1 or vertex2 is null
-        if (vertex1 == null || vertex2 == null) {
+        if (notValid(vertex1, vertex2))
             return false;
-        }
-        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
-            //vertex1 or vertex2 is not within graph or vertex1 == vertex2
-            return false;
-        }
+
         // removes edges between two vertices twice
         // edge.removeEdge() is written for directed graphs
         edges.get(vertex1).remove(vertex2);
@@ -143,14 +126,9 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
-        // vertex1 or vertex2 is null
-        if (vertex1 == null || vertex2 == null)
+        if (notValid(vertex1, vertex2))
             return false;
 
-        if (edges.get(vertex1) == null || edges.get(vertex2) == null || vertex1.equals(vertex2)) {
-            // vertex1 or vertex2 is not within graph or vertex1 == vertex2
-            return false;
-        }
         // since graph is undirected, only needs to be called once
         return edges.get(vertex1).containsKey(vertex2);
     }
@@ -174,5 +152,16 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public Iterable<E> getAllVertices() {
         return edges.keySet();
+    }
+
+    /**
+     * check whether the vertex is valid
+     *
+     * @param v1 - the first vertex
+     * @param v2 - the second vertex
+     * @return true if v1/v2 is null, or v1/v2 is not within graph or they are equal
+     */
+    private boolean notValid(E v1, E v2) {
+        return v1 == null || v2 == null || edges.get(v1) == null || edges.get(v2) == null || v1.equals(v2);
     }
 }
