@@ -1,3 +1,21 @@
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS400 Spring 2018
+// PROJECT:          P4 Dictionary Graph
+// FILES:            Graph.java
+//                   GraphTest.java
+//                   BalancedSearchTree.java
+//                   DuplicateKeyException.java
+//
+// USER:             Shawn Zhong (shawn.zhong@wisc.edu)
+// Instructor:       Deb Deppeler (deppeler@cs.wisc.edu)
+//
+// Bugs:             N/A
+// Source Credits:   https://pages.cs.wisc.edu/~deppeler/cs400/readings/AVL-Trees/index.html
+//                   I looked up the rotateLeft() method on this page for reference
+// Due date:         Monday, February 5th
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
+
 import java.util.*;
 
 /**
@@ -64,9 +82,11 @@ public class GraphProcessor {
         try { // read all data from filepath and add vertices to the graph
             WordProcessor.getWordStream(filepath).forEach(graph::addVertex);
 
+            // Initialize wordList and put all the words in it
             wordList = new ArrayList<>();
             graph.getAllVertices().forEach(wordList::add);
 
+            // Add edges to the graph
             for (String e1 : wordList)
                 for (String e2 : wordList)
                     if (WordProcessor.isAdjacent(e1, e2))
@@ -83,8 +103,13 @@ public class GraphProcessor {
      * Computes shortest paths and distances between all possible pairs of vertices.
      * This method is called after every set of updates in the graph to recompute the path information.
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
+     *
+     * @throws IllegalStateException if populateGraph wasn't called before this method
      */
     public void shortestPathPrecomputation() {
+        if (wordList == null) // error checking
+            throw new IllegalStateException();
+
         predecessor = new int[size][size];
         distance = new int[size][size];
         for (int i = 0; i < size; i++) { // Initialize to -1
@@ -94,21 +119,22 @@ public class GraphProcessor {
 
 
         for (int src = 0; src < size; src++) { //BFS
+            // initialization
             Queue<Integer> queue = new LinkedList<>();
             boolean visited[] = new boolean[size];
             Arrays.fill(visited, false);
             visited[src] = true;
             queue.add(src);
-            distance[src][src] = 0; // initialize distance
+            distance[src][src] = 0;
             while (!queue.isEmpty()) {
                 int cur = queue.remove();
                 for (String e : graph.getNeighbors(wordList.get(cur))) {
                     int des = index(e);
-                    if (!visited[des]) {
+                    if (!visited[des]) {// for each unvisited neighbor
                         visited[des] = true;
                         queue.add(des);
-                        distance[src][des] = distance[src][cur] + 1;
-                        predecessor[src][des] = cur;
+                        distance[src][des] = distance[src][cur] + 1; // update distance
+                        predecessor[src][des] = cur; // set predecessor
                     }
                 }
             }
@@ -136,11 +162,12 @@ public class GraphProcessor {
      * @param word1 first word
      * @param word2 second word
      * @return List<String> list of the words
+     * @throws IllegalStateException if shortestPathPrecomputation wasn't called before this method
      */
     public List<String> getShortestPath(String word1, String word2) {
         List<String> result = new ArrayList<>();
 
-        if (getShortestDistance(word1, word2) <= 0)
+        if (getShortestDistance(word1, word2) <= 0) // return empty list if word1==word2 or no path
             return result;
 
         int src = index(word2); // reverse src and des so that we can get the list in right order
@@ -169,13 +196,26 @@ public class GraphProcessor {
      * @param word1 first word
      * @param word2 second word
      * @return Integer distance
+     * @throws IllegalStateException if shortestPathPrecomputation wasn't called before this method
      */
     public Integer getShortestDistance(String word1, String word2) {
+        if (distance == null) // error checking
+            throw new IllegalStateException();
+
+        // if one of the word is null, or they are equal, or they doesn't exists, then return -1
         if (word1 == null || word2 == null || word1.equals(word2) || index(word1) < 0 || index(word2) < 0)
             return -1;
 
         return distance[index(word1)][index(word2)];
     }
 
-    private int index(String word) { return wordList.indexOf(word.trim().toUpperCase()); }
+    /**
+     * return the index of word in the wordList
+     *
+     * @param word the word we want to find the index
+     * @return the index of word in the wordList
+     */
+    private int index(String word) {
+        return wordList.indexOf(word.trim().toUpperCase());
+    }
 }

@@ -1,3 +1,21 @@
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS400 Spring 2018
+// PROJECT:          P4 Dictionary Graph
+// FILES:            Graph.java
+//                   GraphTest.java
+//                   BalancedSearchTree.java
+//                   DuplicateKeyException.java
+//
+// USER:             Shawn Zhong (shawn.zhong@wisc.edu)
+// Instructor:       Deb Deppeler (deppeler@cs.wisc.edu)
+//
+// Bugs:             N/A
+// Source Credits:   https://pages.cs.wisc.edu/~deppeler/cs400/readings/AVL-Trees/index.html
+//                   I looked up the rotateLeft() method on this page for reference
+// Due date:         Monday, February 5th
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

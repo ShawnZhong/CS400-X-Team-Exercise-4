@@ -1,3 +1,21 @@
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS400 Spring 2018
+// PROJECT:          P4 Dictionary Graph
+// FILES:            Graph.java
+//                   GraphTest.java
+//                   BalancedSearchTree.java
+//                   DuplicateKeyException.java
+//
+// USER:             Shawn Zhong (shawn.zhong@wisc.edu)
+// Instructor:       Deb Deppeler (deppeler@cs.wisc.edu)
+//
+// Bugs:             N/A
+// Source Credits:   https://pages.cs.wisc.edu/~deppeler/cs400/readings/AVL-Trees/index.html
+//                   I looked up the rotateLeft() method on this page for reference
+// Due date:         Monday, February 5th
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
+
 import org.junit.*;
 import org.junit.rules.Timeout;
 
@@ -7,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * This class implements JUnit test to test whether GraphProcessor class is properly implemented
@@ -121,94 +140,59 @@ public class GraphProcessorTest {
         List<String> actual = gp.getShortestPath("RAPINE", "ALIKE");
         assertEquals("Shortest distance from RAPINE to ALIKE is", new ArrayList<>(), actual);
     }
-    
+
     /**
      * Calls getShortestPath on gp that has yet to run the
      * populate method
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void test09_calling_shortest_path_on_empty_graph() {
-    	try {
-    		gp = new GraphProcessor();
-    		gp.getShortestPath("", "");
-    		fail("Exception not thrown, populate has yet to been called");
-    	} catch(RuntimeException e) {
-    		
-    	}
-    		
+        gp = new GraphProcessor();
+        gp.getShortestPath("", "");
+        fail("Exception not thrown, populate has yet to been called");
     }
-    
+
     /**
      * Calls getShortestPath on gp that has yet to run the
      * populate method
      */
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void test10_calling_get_shortest_distance_on_empty_graph() {
-    	try {
-    		gp = new GraphProcessor();
-    		gp.getShortestDistance("", "");
-    		fail("Exception not thrown, populate has yet to been called");
-    	} catch(RuntimeException e) {
-    		
-    	}
-    		
+        gp = new GraphProcessor();
+        gp.getShortestDistance("", "");
+        fail("Exception not thrown, populate has yet to been called");
     }
-    
-    /**
-     * Calls shortest path pre-computation twice before graph data
-     *  has been updated
-     */
-    @Test(expected = RuntimeException.class)
-    public void test11_call_shortestPathPrecompuation_twice_before_updating() {
-    	try {
-    		gp.shortestPathPrecomputation();
-    		gp.shortestPathPrecomputation();
-    		fail("Exception not thrown, graph has yet to be updated");
-    	} catch(RuntimeException e) {
-    		
-    	}
-    		
-    }
-    
+
+
     /**
      * Calls shorestPathPrecomputation on an empty graph
      */
-    @Test
-    public void test12_calling_shortestPathPrecomputation_on_empty_graph() {
-    	try {
-    		gp = new GraphProcessor();
-    		gp.shortestPathPrecomputation();
-    		fail("Exception not thrown, populate has yet to been called");
-    	} catch(RuntimeException e) {
-    		
-    	}
-    		
+    @Test(expected = IllegalStateException.class)
+    public void test11_calling_shortestPathPrecomputation_on_empty_graph() {
+        gp = new GraphProcessor();
+        gp.shortestPathPrecomputation();
+        fail("Exception not thrown, populate has yet to been called");
     }
-    
+
     /**
      * Calls getShortestPath  before pre-computation has been called
      */
-    @Test
-    public void test13_calling_shortest_path_before_precomputation() {
-    	try {
-    		gp.getShortestPath("", "");
-    		fail("Exception not thrown, precomputation has yet to been called");
-    	} catch(RuntimeException e) {
-    		
-    	}
-    		
+    @Test(expected = IllegalStateException.class)
+    public void test12_calling_shortest_path_before_precomputation() {
+        gp = new GraphProcessor();
+        gp.populateGraph("word_list.txt");
+        gp.getShortestPath("", "");
+        fail("Exception not thrown, precomputation has yet to been called");
     }
-    
+
     /**
      * called getting shortest distance before pre-computation has been called
      */
-    @Test
-    public void test14_calling_get_shortest_distance_before_precomputation() {
-    	try {
-    		gp.getShortestDistance("", "");
-    		fail("Exception not thrown, precomputatoin has yet to been called");
-    	} catch(RuntimeException e) {
-    		
-    	}
+    @Test(expected = IllegalStateException.class)
+    public void test13_calling_get_shortest_distance_before_precomputation() {
+        gp = new GraphProcessor();
+        gp.populateGraph("word_list.txt");
+        gp.getShortestDistance("", "");
+        fail("Exception not thrown, precomputatoin has yet to been called");
     }
 }
