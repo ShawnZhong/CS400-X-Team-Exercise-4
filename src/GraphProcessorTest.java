@@ -76,7 +76,7 @@ public class GraphProcessorTest {
     }
 
     /**
-     *
+     * Test whether getShortestDistance returns the correct the value
      */
     @Test
     public void test03_get_shortest_distance() {
@@ -124,7 +124,7 @@ public class GraphProcessorTest {
     }
 
     /**
-     *
+     * test whether getShortestPath return empty list when the vertex does not exist
      */
     @Test
     public void test07_get_shortest_path_from_vertex_does_not_exist() {
@@ -133,7 +133,7 @@ public class GraphProcessorTest {
     }
 
     /**
-     *
+     * test whether getShortestPath return empty list when the path does not exist
      */
     @Test
     public void test08_get_shortest_path_from_two_components() {
