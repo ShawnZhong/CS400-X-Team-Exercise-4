@@ -3,17 +3,21 @@
 // PROJECT:          P4 Dictionary Graph
 // FILES:            Graph.java
 //                   GraphTest.java
-//                   BalancedSearchTree.java
-//                   DuplicateKeyException.java
+//                   GraphProcessor.java
+//                   GraphProcessorTest.java
+//                   WordProcessorTest.java
+//                   GraphADT.java
 //
 // USER:             Shawn Zhong (shawn.zhong@wisc.edu)
+//                   Catherine Yan (chyan2@wisc.edu)
+//                   Jiazhi Yang (jyang436@wisc.edu)
 // Instructor:       Deb Deppeler (deppeler@cs.wisc.edu)
 //
 // Bugs:             N/A
-// Source Credits:   https://pages.cs.wisc.edu/~deppeler/cs400/readings/AVL-Trees/index.html
-//                   I looked up the rotateLeft() method on this page for reference
-// Due date:         Monday, February 5th
+// Source Credits:   N/A
+// Due date:         Monday, April 16th
 //
+// GraphProcesserTest.java
 //////////////////////////// 80 columns wide //////////////////////////////////
 
 import org.junit.*;
@@ -36,6 +40,7 @@ public class GraphProcessorTest {
     @Rule
     public Timeout globalTimeout = new Timeout(60, TimeUnit.SECONDS);
     GraphProcessor gp;
+    GraphProcessor gp1;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception { }
@@ -87,7 +92,7 @@ public class GraphProcessorTest {
         int sd3 = gp.getShortestDistance("BELLIES", "JOLLIES");
         assertEquals("Shortest distance from BELLIES to JOLLIES is", 2, sd3);
         int sd4 = gp.getShortestDistance("DEFINE", "SHINNY");
-        assertEquals("Shortest distance from DEFINE to SHINY is", 26, sd4);
+        assertEquals("Shortest distance from DEFINE to SHINNY is", 26, sd4);
     }
 
     /**
@@ -142,13 +147,13 @@ public class GraphProcessorTest {
     }
 
     /**
-     * Calls getShortestPath on gp that has yet to run the
+     * Calls getShortestPath on gp1 that has yet to run the
      * populate method
      */
     @Test(expected = IllegalStateException.class)
     public void test09_calling_shortest_path_on_empty_graph() {
-        gp = new GraphProcessor();
-        gp.getShortestPath("", "");
+        gp1 = new GraphProcessor();
+        gp1.getShortestPath("", "");
         fail("Exception not thrown, populate has yet to been called");
     }
 
@@ -158,8 +163,8 @@ public class GraphProcessorTest {
      */
     @Test(expected = IllegalStateException.class)
     public void test10_calling_get_shortest_distance_on_empty_graph() {
-        gp = new GraphProcessor();
-        gp.getShortestDistance("", "");
+        gp1 = new GraphProcessor();
+        gp1.getShortestDistance("", "");
         fail("Exception not thrown, populate has yet to been called");
     }
 
@@ -169,8 +174,8 @@ public class GraphProcessorTest {
      */
     @Test(expected = IllegalStateException.class)
     public void test11_calling_shortestPathPrecomputation_on_empty_graph() {
-        gp = new GraphProcessor();
-        gp.shortestPathPrecomputation();
+        gp1 = new GraphProcessor();
+        gp1.shortestPathPrecomputation();
         fail("Exception not thrown, populate has yet to been called");
     }
 
@@ -179,9 +184,9 @@ public class GraphProcessorTest {
      */
     @Test(expected = IllegalStateException.class)
     public void test12_calling_shortest_path_before_precomputation() {
-        gp = new GraphProcessor();
-        gp.populateGraph("word_list.txt");
-        gp.getShortestPath("", "");
+        gp1 = new GraphProcessor();
+        gp1.populateGraph("word_list.txt");
+        gp1.getShortestPath("", "");
         fail("Exception not thrown, precomputation has yet to been called");
     }
 
@@ -190,9 +195,9 @@ public class GraphProcessorTest {
      */
     @Test(expected = IllegalStateException.class)
     public void test13_calling_get_shortest_distance_before_precomputation() {
-        gp = new GraphProcessor();
-        gp.populateGraph("word_list.txt");
-        gp.getShortestDistance("", "");
+        gp1 = new GraphProcessor();
+        gp1.populateGraph("word_list.txt");
+        gp1.getShortestDistance("", "");
         fail("Exception not thrown, precomputatoin has yet to been called");
     }
 }

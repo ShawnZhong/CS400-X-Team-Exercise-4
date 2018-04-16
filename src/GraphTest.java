@@ -1,8 +1,28 @@
-import org.junit.*;
+/////////////////////////////////////////////////////////////////////////////
+// Semester:         CS400 Spring 2018
+// PROJECT:          P4 Dictionary Graph
+// FILES:            Graph.java
+//                   GraphTest.java
+//                   GraphProcessor.java
+//                   GraphProcessorTest.java
+//                   WordProcessorTest.java
+//                   GraphADT.java
+//
+// USER:             Shawn Zhong (shawn.zhong@wisc.edu)
+//                   Catherine Yan (chyan2@wisc.edu)
+//                   Jiazhi Yang (jyang436@wisc.edu)
+// Instructor:       Deb Deppeler (deppeler@cs.wisc.edu)
+//
+// Bugs:             N/A
+// Source Credits:   N/A
+// Due date:         Monday, April 16th
+//
+// GraphTest.java
+//////////////////////////// 80 columns wide //////////////////////////////////
 
+import org.junit.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.Assert.*;
 
 /**
