@@ -112,29 +112,28 @@ public class GraphProcessor {
 
         predecessor = new int[size][size];
         distance = new int[size][size];
-        for (int i = 0; i < size; i++) { // Initialize to -1
-            Arrays.fill(predecessor[i], -1);
-            Arrays.fill(distance[i], -1);
+        for (int i = 0; i < size; i++) {
+            Arrays.fill(predecessor[i], -1); // Initialize predecessor to -1
+            Arrays.fill(distance[i], -1); // Initialize distance to -1
+            distance[i][i] = 0; // except for diagonals
         }
 
 
         for (int src = 0; src < size; src++) { //BFS
             // initialization
             Queue<Integer> queue = new LinkedList<>();
-            boolean visited[] = new boolean[size];
-            Arrays.fill(visited, false);
+            boolean visited[] = new boolean[size]; // default is false
             visited[src] = true;
             queue.add(src);
-            distance[src][src] = 0;
             while (!queue.isEmpty()) {
                 int cur = queue.remove();
                 for (String e : graph.getNeighbors(wordList.get(cur))) {
-                    int des = index(e);
-                    if (!visited[des]) {// for each unvisited neighbor
-                        visited[des] = true;
-                        queue.add(des);
-                        distance[src][des] = distance[src][cur] + 1; // update distance
-                        predecessor[src][des] = cur; // set predecessor
+                    int nxt = index(e);
+                    if (!visited[nxt]) {// for each unvisited neighbor
+                        visited[nxt] = true;
+                        queue.add(nxt);
+                        distance[src][nxt] = distance[src][cur] + 1; // update distance
+                        predecessor[src][nxt] = cur; // set predecessor
                     }
                 }
             }
