@@ -17,6 +17,9 @@
 //////////////////////////// 80 columns wide //////////////////////////////////
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Undirected and unweighted graph implementation
@@ -30,7 +33,7 @@ public class Graph<E> implements GraphADT<E> {
     /**
      * Instance variables and constructors
      */
-    private HashMap<E, HashMap<E, Integer>> edges;
+    private Map<E, Set<E>> edges;
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -55,7 +58,7 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex == null || edges.containsKey(vertex))  // not null or duplicates
             return null;
 
-        edges.put(vertex, new HashMap<>()); // adds index in edges list to vertex
+        edges.put(vertex, new HashSet<>()); // adds index in edges list to vertex
         return vertex;
     }
 
@@ -103,8 +106,8 @@ public class Graph<E> implements GraphADT<E> {
             return false;
 
         // added twice, edges is written for directed graph
-        edges.get(vertex1).put(vertex2, 0);
-        edges.get(vertex2).put(vertex1, 0);
+        edges.get(vertex1).add(vertex2);
+        edges.get(vertex2).add(vertex1);
         return true;
     }
 
@@ -151,7 +154,7 @@ public class Graph<E> implements GraphADT<E> {
             return false;
 
         // since graph is undirected, only needs to be called once
-        return edges.get(vertex1).containsKey(vertex2);
+        return edges.get(vertex1).contains(vertex2);
     }
 
     /**
@@ -162,7 +165,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        return edges.get(vertex).keySet();
+        return edges.get(vertex);
     }
 
     /**
