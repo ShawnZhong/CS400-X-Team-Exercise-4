@@ -112,7 +112,7 @@ public class GraphProcessor {
      */
     public void shortestPathPrecomputation() {
         if (wordList == null) // error checking
-            throw new IllegalStateException();
+            throw new IllegalStateException("Please call populateGraph() first");
 
         predecessor = new int[size][size];
         distance = new int[size][size];
@@ -203,7 +203,7 @@ public class GraphProcessor {
      */
     public Integer getShortestDistance(String word1, String word2) {
         if (distance == null) // error checking
-            throw new IllegalStateException();
+            throw new IllegalStateException("Please call shortestPathPrecomputation() first");
 
         // if one of the word is null, or they are equal, or they doesn't exists, then return -1
         if (word1 == null || word2 == null || word1.equals(word2) || index(word1) < 0 || index(word2) < 0)
